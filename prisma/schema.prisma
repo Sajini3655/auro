@@ -1,0 +1,39 @@
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Rewards {
+  id       String   @id @map("_id") @default(auto()) @db.ObjectId
+  username String   @unique
+  points   Int      @default(0)
+  vouchers Json     @default("[]")
+  history  Json     @default("[]")
+}
+
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id       Int      @id @default(autoincrement())
+  username String   @unique
+  email    String
+  points   Int      @default(0)
+  vouchers Voucher[]
+}
+
+model Voucher {
+  id       Int    @id @default(autoincrement())
+  userId   Int
+  code     String
+  amount   Int
+  active   Boolean @default(true)
+  user     User    @relation(fields: [userId], references: [id])
+}
+
